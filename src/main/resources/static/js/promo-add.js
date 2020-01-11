@@ -81,7 +81,6 @@ $("#linkPromocao").on('change', function(){
 				$("#loader-img").addClass("loader");
 			},
 			success: function ( data ){
-				console.log(data);
 				$("#titulo").val(data.title);
 				$("#site").text(data.site.replace("@", ""));
 				$("#linkImagem").attr("src", data.image);

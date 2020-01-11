@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.alves.ramon.SpringAjax.domain.Categoria;
 import com.alves.ramon.SpringAjax.domain.Promocao;
@@ -65,6 +66,14 @@ public class PromocaoController {
 		PageRequest pageRequest = PageRequest.of(0, 8, sort);
 		model.addAttribute("promocoes", promocaoRepository.findAll(pageRequest));
 		return "promo-list";
+	}
+	
+	@GetMapping("/list/loadmore")
+	public String listarMaisPromocoes(@RequestParam(name = "page", defaultValue = "1") int page, ModelMap model) {
+		Sort sort = Sort.by(Sort.Direction.DESC, "dtCadastro");
+		PageRequest pageRequest = PageRequest.of(page, 8, sort);
+		model.addAttribute("promocoes", promocaoRepository.findAll(pageRequest));
+		return "promo-card";
 	}
 	
 	@ModelAttribute("categorias")
