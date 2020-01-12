@@ -84,6 +84,12 @@ public class PromocaoController {
 		return ResponseEntity.ok(likes);
 	}
 	
+	@GetMapping("/site")
+	public ResponseEntity<?> autoCompleteByName(@RequestParam("termo") String site){
+		List<String> sites = promocaoRepository.findSitesByName(site);
+		return ResponseEntity.ok(sites);
+	}
+	
 	@ModelAttribute("categorias")
 	private List<Categoria> getCategorias(){
 		return categoriaRepository.findAll();

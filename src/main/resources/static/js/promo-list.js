@@ -55,6 +55,7 @@ function loadByScrollBar(pagenumber){
 		})
 }
 
+//Implementação dos Likes
 $(document).on("click", "button[id*='likes-btn-']",function(){
 	var id = $(this).attr("id").split("-")[2];
 
@@ -69,5 +70,22 @@ $.ajax({
 	}
 })
 
+})
+
+//AutoComplete:
+$("#autocomplete-input").autocomplete({
+	source: function(req, res){
+		$.ajax({
+			method: "GET",
+			url: "/promocao/site",
+			data: {
+				//Por que .term ?????
+				termo: req.term
+			},
+			success: function (result){
+				res(result);
+			}
+		});
+	}
 })
 
