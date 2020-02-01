@@ -12,9 +12,8 @@ $(window).scroll(function (){
 	
 	var scrollTop = $(this).scrollTop();
 	var conteudo = $(document).height() - $(window).height();
-
-	//console.log("scrollTop: " + scrollTop + 1 + "conteudo: " + conteudo);
-	scrollTop = scrollTop + 0.20;
+	scrollTop += 0.6;
+	//console.log("scrollTop: " + scrollTop + "conteudo: " + conteudo);
 	if(scrollTop >= conteudo){
 		if(temMais && !loading){
 		 pagenumber ++;
@@ -26,12 +25,14 @@ $(window).scroll(function (){
 })
 
 function loadByScrollBar(pagenumber){
+	var site = $("#autocomplete-input").val();
 	
 		$.ajax({
 			method: "GET",
 			url: "/promocao/list/loadmore",
 			data: {
-				page: pagenumber
+				page: pagenumber,
+				site: site
 			},
 			beforeSend: function(){
 				$("#loader-img").show();
@@ -87,5 +88,34 @@ $("#autocomplete-input").autocomplete({
 			}
 		});
 	}
+})
+
+$("#autocomplete-submit").on("click", function (){
+	var site = $("#autocomplete-input").val();
+	$.ajax({
+		method: "GET",
+		url: "/promocao/site/list",
+		data: {
+			site: site
+		},
+		beforeSend: function (){
+			pagenumber = 0;
+			$("#fim-btn").hide();
+			$(".row").fadeOut(400, function (){
+				$(this).empty();
+			});
+		},
+		success: function (response){
+			$(".row").fadeIn(250, function (){
+				$(this).append(response);
+				
+			});
+			
+		},
+		error: function (xhr){
+			alert("Ops, algo deu errado: " + xhr.status + xhr.statusText);
+		}
+			
+	})
 })
 

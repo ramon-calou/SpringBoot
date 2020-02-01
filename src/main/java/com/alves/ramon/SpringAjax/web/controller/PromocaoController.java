@@ -70,10 +70,17 @@ public class PromocaoController {
 	}
 	
 	@GetMapping("/list/loadmore")
-	public String listarMaisPromocoes(@RequestParam(name = "page", defaultValue = "1") int page, ModelMap model) {
+	public String listarMaisPromocoes(@RequestParam(name = "page", defaultValue = "1") int page,
+									  @RequestParam(name = "site", defaultValue = "") String site,
+									  ModelMap model) {
 		Sort sort = Sort.by(Sort.Direction.DESC, "dtCadastro");
 		PageRequest pageRequest = PageRequest.of(page, 8, sort);
-		model.addAttribute("promocoes", promocaoRepository.findAll(pageRequest));
+		if(site.isEmpty()) {
+			model.addAttribute("promocoes", promocaoRepository.findAll(pageRequest));	
+		}else {
+			model.addAttribute("promocoes", promocaoRepository.findBySite(site, pageRequest));
+		}
+		
 		return "promo-card";
 	}
 	
@@ -82,6 +89,19 @@ public class PromocaoController {
 		promocaoRepository.updateSomarLikes(id);
 		int likes = promocaoRepository.findLikeById(id);
 		return ResponseEntity.ok(likes);
+	}
+	@GetMapping("/site/list")
+	public String listarPorSite(@RequestParam("site") String site, ModelMap model) {
+		Sort sort = Sort.by(Sort.Direction.DESC, "dtCadastro");
+		PageRequest pageRequest = PageRequest.of(0, 8, sort);
+		if(!site.isEmpty()) {
+			model.addAttribute("promocoes", promocaoRepository.findBySite(site, pageRequest));	
+		}else {
+			model.addAttribute("promocoes", promocaoRepository.findAll(pageRequest));
+		}
+			
+		
+		return "promo-card";
 	}
 	
 	@GetMapping("/site")
