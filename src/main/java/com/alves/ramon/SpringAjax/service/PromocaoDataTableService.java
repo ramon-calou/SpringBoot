@@ -1,5 +1,6 @@
 package com.alves.ramon.SpringAjax.service;
 
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -31,10 +32,11 @@ public class PromocaoDataTableService {
 		
 		String column = columnName(request);
 		Sort.Direction direction = orderBy(request);
+		String search = searchBy(request);
 		
 		Pageable pageable = PageRequest.of(current, length, direction, column);
 		
-		Page<Promocao> page = queryBy(repository, pageable);
+		Page<Promocao> page = queryBy(search, repository, pageable);
 		
 		Map<String, Object> json = new LinkedHashMap<String, Object>();
 		json.put("draw", draw);
@@ -45,8 +47,26 @@ public class PromocaoDataTableService {
 		return json;
 	}
 
-	private Page<Promocao> queryBy(PromocaoRepository repository, Pageable pageable) {
-		return repository.findAll(pageable);
+	private String searchBy(HttpServletRequest request) {
+		
+		return request.getParameter("search[value]").isEmpty()
+				? ""
+				: request.getParameter("search[value]");
+	}
+
+	private Page<Promocao> queryBy(String search, PromocaoRepository repository, Pageable pageable) {
+		if(search.isEmpty()) {
+			return repository.findAll(pageable);
+		}
+		
+		if(search.matches("^([0-9]+([.,][0-9]{2}))?$")) {
+			search = search.replace(",", ".");
+			return repository.findByPreco(new BigDecimal(search), pageable);
+		}
+		
+			return repository.findByTituloOrSiteOrCategoria(search, pageable);
+		
+		
 	}
 
 	private Direction orderBy(HttpServletRequest request) {
