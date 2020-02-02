@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ import com.alves.ramon.SpringAjax.domain.Categoria;
 import com.alves.ramon.SpringAjax.domain.Promocao;
 import com.alves.ramon.SpringAjax.repository.CategoriaRepository;
 import com.alves.ramon.SpringAjax.repository.PromocaoRepository;
+import com.alves.ramon.SpringAjax.service.PromocaoDataTableService;
 
 @Controller
 @RequestMapping("/promocao")
@@ -120,6 +122,16 @@ public class PromocaoController {
 		return "promo-add";
 	}
 	
+	@GetMapping("/tabela")
+	public String showtabela() {
+		return "promo-datatables";
+	}
+	
+	@GetMapping("/datatables/server")
+	public ResponseEntity<?> datatables(HttpServletRequest request) {
+		Map<String, Object> data = new PromocaoDataTableService().execute(promocaoRepository, request);
+		return ResponseEntity.ok(data);
+	}
 	
 
 }
