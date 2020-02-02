@@ -19,7 +19,7 @@ $("#form-add-promo").submit(function(evt){
 		beforeSend: function (){
 			
 			//Remove as mensagens de erro
-			$("#span").closest('.error-span').remove();
+			$("span").closest('.error-span').remove();
 			
 			//removendo as bordas vermelhas
 			$("#categoria").removeClass("is-invalid");

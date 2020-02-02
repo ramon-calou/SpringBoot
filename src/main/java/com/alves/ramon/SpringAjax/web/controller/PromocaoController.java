@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.alves.ramon.SpringAjax.domain.Categoria;
 import com.alves.ramon.SpringAjax.domain.Promocao;
+import com.alves.ramon.SpringAjax.dto.PromocaoDTO;
 import com.alves.ramon.SpringAjax.repository.CategoriaRepository;
 import com.alves.ramon.SpringAjax.repository.PromocaoRepository;
 import com.alves.ramon.SpringAjax.service.PromocaoDataTableService;
@@ -126,12 +127,49 @@ public class PromocaoController {
 	public String showtabela() {
 		return "promo-datatables";
 	}
+	//DataTables
 	
 	@GetMapping("/datatables/server")
 	public ResponseEntity<?> datatables(HttpServletRequest request) {
 		Map<String, Object> data = new PromocaoDataTableService().execute(promocaoRepository, request);
 		return ResponseEntity.ok(data);
 	}
+	@GetMapping("/delete/{id}")
+	public ResponseEntity<?> excluirPromocao(@PathVariable("id") Long id){
+		promocaoRepository.deleteById(id);
+		return ResponseEntity.ok().build();
+	}
 	
+	@GetMapping("/edit/{id}")
+	public ResponseEntity<?> preEditarPromocao(@PathVariable("id") Long id){
+		Promocao promocao = promocaoRepository.findById(id).get();
+		return ResponseEntity.ok(promocao);
+	}
+	
+	@PostMapping("/edit")
+	public ResponseEntity<?> editarPromocao (@Valid PromocaoDTO dto, BindingResult result){
+		
+		if(result.hasErrors()) {
+			Map<String, String> erros = new HashMap<>();
+			for (FieldError error : result.getFieldErrors()) {
+				erros.put(error.getField(), error.getDefaultMessage());
+			}
+			return ResponseEntity.unprocessableEntity().body(erros);
+		}
+		
+		Promocao promocao = promocaoRepository.findById(dto.getId()).get();
+		
+		promocao.setCategoria(dto.getCategoria());
+		promocao.setDescricao(dto.getDescricao());
+		promocao.setLinkImagem(dto.getLinkImagem());
+		promocao.setPreco(dto.getPreco());
+		promocao.setTitulo(dto.getTitulo());
+		
+		promocaoRepository.save(promocao);
+		
+		
+		
+		return ResponseEntity.ok().build();
+	}
 
 }
