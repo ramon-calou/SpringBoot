@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
-@ImportResource(locations = "classpath: dwr-spring.xml")
+@ImportResource(locations = "classpath:dwr-spring.xml")
 @SpringBootApplication
 public class SpringAjaxApplication {
 
@@ -21,7 +21,7 @@ public class SpringAjaxApplication {
 		ServletRegistrationBean<DwrSpringServlet> registrationBean = new ServletRegistrationBean<>(dwrSpringServlet, "/dwr/*");
 		
 		registrationBean.addInitParameter("debug", "true");
-		registrationBean.addInitParameter("activeReverAjaxEnabled", "true");
+		registrationBean.addInitParameter("activeReverseAjaxEnabled", "true");
 		return registrationBean;
 	}
 
